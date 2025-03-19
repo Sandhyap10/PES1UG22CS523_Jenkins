@@ -1,36 +1,37 @@
 pipeline {
     agent any
-    
+
     stages {
-        stage('Build') {
+        stage('Checkout') {
             steps {
                 script {
-                    try {
-                        sh 'g++ -o PES1UG22CS523-1 hello.cpp'
-                    } catch (Exception e) {
-                        error("Build failed: ${e.getMessage()}")
-                    }
+                    deleteDir() // Clean workspace before pulling new code
+                    checkout scm
                 }
+            } 
+        }
+
+        stage('Build') {
+            steps {
+                sh 'ls -l main' // Debug: List files in "main" directory
+                sh 'g++ -o main/hello_exec main/hello.cpp' // Compile from "main" folder
             }
         }
-        
+
         stage('Test') {
             steps {
-                sh './PES1UG22CS523-1'
+                sh './main/hello_exec' // Run the compiled program
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Deploying...'
+                echo 'Deploying application...'
             }
         }
     }
 
     post {
-        success {
-            echo 'Pipeline succeeded!'
-        }
         failure {
             echo 'Pipeline failed!'
         }
