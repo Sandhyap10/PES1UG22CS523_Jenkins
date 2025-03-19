@@ -33,3 +33,7 @@ pipeline {
         } 
     } 
 } 
+
+options {
+  debug true
+}
